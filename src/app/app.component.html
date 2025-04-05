@@ -333,8 +333,20 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
 
-<div class="alert-button-container">
-  <button (click)="showAlert()" class="alert-button">アラート表示</button>
+<div class="symbol-container">
+  <div class="status-info">
+    <h2>Symbol SDK状態</h2>
+    <p>初期化状態: <span [class]="sdkInitialized ? 'success' : 'error'">{{sdkInitialized ? '成功' : '失敗'}}</span></p>
+    @if (sdkInitialized) {
+      <p>生成されたアドレス: <span class="address">{{address}}</span></p>
+    } @else {
+      <p class="error">エラー: {{errorMessage}}</p>
+    }
+  </div>
+  
+  <div class="alert-button-container">
+    <button (click)="showAlert()" class="alert-button">機能テスト</button>
+  </div>
 </div>
 
 <router-outlet />

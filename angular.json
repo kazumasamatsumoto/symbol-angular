@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "externalDependencies": ["crypto-browserify", "path-browserify", "util"],
             "outputPath": "dist/symbol-angular",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -25,6 +26,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
