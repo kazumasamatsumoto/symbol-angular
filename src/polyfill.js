@@ -1,13 +1,43 @@
-// ブラウザのglobal TextDecoderとTextEncoderをutilで使用できるようにするポリフィル
-if (typeof window !== 'undefined') {
-  // utilモジュールが外部化されたときの代替ポリフィルを提供
-  window.util = window.util || {};
+// polyfill.js
+if (typeof window !== "undefined") {
+  // Node.jsのrequire関数をエミュレート
+  window.require = function (module) {
+    if (module === "util") {
+      return {
+        TextDecoder: class BrowserTextDecoder extends window.TextDecoder {
+          constructor(encoding, options = {}) {
+            // ブラウザのTextDecoderはfatalオプションを受け付けないことがあるので、
+            // オプションをフィルタリングする
+            super(encoding);
+          }
+        },
+        TextEncoder: window.TextEncoder,
+      };
+    }
 
-  // ブラウザが提供するTextDecoderとTextEncoderを使用
-  window.util.TextDecoder = window.TextDecoder;
-  window.util.TextEncoder = window.TextEncoder;
+    // 他のrequireが呼ばれた場合のフォールバック
+    console.warn(`Module ${module} was required but is not mocked.`);
+    return {};
+  };
 
-  console.log('Polyfill loaded for util.TextDecoder and util.TextEncoder');
+  // Nodeのfsモジュールをモック
+  window.fs = {
+    readFileSync: function () {
+      throw new Error("fs.readFileSync is not available in browser");
+    },
+  };
+
+  // Nodeのpathモジュールをモック
+  window.path = {
+    join: function () {
+      return Array.from(arguments).join("/");
+    },
+  };
+
+  window.global = window;
+  window.process = window.process || { env: {} };
+
+  console.log("Enhanced polyfill loaded for Node.js compatibility");
 }
 
 export {};
